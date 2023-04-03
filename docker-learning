@@ -1,0 +1,76 @@
+docker repository: docker hub
+
+docker concept:
+image: running environment package 
+container: running instance of the image
+
+
+CLI command:
+docker —help
+docker run —help
+docker —version
+
+docker pull <image name:tag name>
+docker pull redis: pull redis image from docker hub, the default tag is latest
+docker pull redis:6.2.7
+
+docker images: check all the images in local machine
+docker images -a: check all stale images
+docker rmi: delete docker image
+
+docker run —name <container name> {<image name:tag>  or <image id>}-d: run the container; 
+	-d run the container in detached mode (run in background)
+	-p port mapping <local port: container default port>
+docker run —name redis-latest redis:latest
+docker run —name redis-latest -p6379:6379 -d redis:latest
+
+docker ps : only look up active running container
+docker ps -a: see all the containers include not running ones
+
+docker stop <container id or container name>: stop container
+docker start <container id or container name>: restart container
+docker rm <container id or container name>: delete container
+
+docker logs <container id or container name>: check logs
+docker logs -f <container id or container name>: check active logs
+
+docker inspect <image id>: check the info of the image
+docker inspect <container id>: check the info of the container
+
+docker exec -it <container-id or container name> <command(command to execute)>: go into container: -it: interact mode
+redis as an example:
+docker exec -it container-id /bin/sh
+	# redis-cli: go to command console
+	> KEYS *
+	use ‘exit’ to exit > or #
+docker exec -it container-id bash: go to the shell of the internal container
+Note: different containers use different shell try with /bin/sh or bash or zsh
+
+delete all dockers in once
+docker system prune -a: delete everything include containers, network, images and build cache
+
+
+create our own docker images via Dockerfile
+FROM <base image>
+RUN
+CMD 
+
+Note: normally we create work directory app/ to start our app
+
+for the maven project to generate a jar file: mvn clean install
+e.g., 
+FROM openjdk:11
+
+ARG JAR_FILE=target/*.jar
+
+COPY ${JAR_FILE} serviceregistry.jar    (copy and rename)
+
+ENTRYPOINT [“java”, “-jar”, “/serviceregistry.jar”]
+
+EXPOR 8761        (expose port for access)
+
+
+docker build image
+docker build <repository name/image name:tag> . (. represents build from current directory)
+docker build -t dailycodebuffer/serviceregistry:0.0.1 .
+
