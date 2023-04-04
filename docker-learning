@@ -1,3 +1,6 @@
+Dockers/K8s learning
+
+
 docker repository: docker hub
 
 docker concept:
@@ -21,6 +24,8 @@ docker rmi: delete docker image
 docker run —name <container name> {<image name:tag>  or <image id>}-d: run the container; 
 	-d run the container in detached mode (run in background)
 	-p port mapping <local port: container default port>
+	    network mapping: docker run -p 8080 (local host port) : 8080 (container port) image-name
+            route incoming request to this port on local host does NOT have be identical to container port
 docker run —name redis-latest redis:latest
 docker run —name redis-latest -p6379:6379 -d redis:latest
 
@@ -74,3 +79,32 @@ docker build image
 docker build <repository name/image name:tag> . (. represents build from current directory)
 docker build -t dailycodebuffer/serviceregistry:0.0.1 .
 
+
+docker local networking issue: communication between dockers
+1. set environment variable
+2. pass -e <environment variable=host.docker.internal:port_number>
+
+
+publish docker images
+docker login -u <username> -p <password>
+docker push <repository name/image>
+
+
+docker compose: docker-compose.yml
+docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml down -d: delete all containers inside
+
+version: ‘3’
+services:
+    serviceregistry:
+        image: ‘’
+        container_name:
+        ports:
+            - ’8761:8761’   
+    configserver:
+         depends_on:
+             - configserver
+
+——————————————
+
+Docker Maven JIB Plugin
